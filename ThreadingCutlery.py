@@ -31,12 +31,14 @@ class Cutlery:
     def __init__(self, knives=0, forks=0):
         self.knives = knives
         self.forks = forks
+        self.lock = threading.Lock
     def give(self, to: 'Cutlery', knives=0, forks=0):
         self.change(-knives, -forks)
         to.change(knives, forks)
     def change(self, knives, forks):
-        self.knives += knives
-        self.forks += forks
+        with self.lock:
+            self.knives += knives
+            self.forks += forks
 
 kitchen = Cutlery(knives=100, forks=100)
 bots = [ThreadBot() for i in range(10)]
